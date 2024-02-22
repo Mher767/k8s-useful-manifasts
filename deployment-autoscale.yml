@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fd-autoscale
+#  labels:
+#    app: k8s-docker
+#    core: nginx
+spec:
+#  replicas: 4
+  selector:
+    matchLabels:
+      project: kkkk
+
+  template:
+    metadata:
+      labels:
+        project: kkkk
+
+    spec:
+      containers:
+        - name: kkkkkweb
+          image: mher6286/k8s-docker
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: html-nginx
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fd-autoscale
+  minReplicas: 4
+  maxReplicas: 8
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
